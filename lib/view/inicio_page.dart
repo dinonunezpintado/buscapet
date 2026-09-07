@@ -51,10 +51,7 @@ class _InicioPageState extends State<InicioPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // ==========================================
-            // ENCABEZADO
-            // ==========================================
-
+            // top
             Container(
               height: 90,
               width: double.infinity,
@@ -99,18 +96,14 @@ class _InicioPageState extends State<InicioPage> {
               ),
             ),
 
-            // ==========================================
-            // CONTENIDO
-            // ==========================================
+            // contenido
 
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // ==================================
-                    // IMAGEN PRINCIPAL
-                    // ==================================
 
+                    // imagen hero
                     SizedBox(
                       width: double.infinity,
                       height: 330,
@@ -123,9 +116,7 @@ class _InicioPageState extends State<InicioPage> {
 
                     const SizedBox(height: 28),
 
-                    // ==================================
-                    // BOTONES PRINCIPALES
-                    // ==================================
+                    // botones encontré/perdí
 
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -162,9 +153,7 @@ class _InicioPageState extends State<InicioPage> {
 
                     const SizedBox(height: 34),
 
-                    // ==================================
-                    // TÍTULO PUBLICACIONES
-                    // ==================================
+                    // titulo publicaciones
 
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -210,9 +199,7 @@ class _InicioPageState extends State<InicioPage> {
 
                     const SizedBox(height: 18),
 
-                    // ==================================
-                    // PUBLICACIONES
-                    // ==================================
+                    // publicaciones
 
                     SizedBox(
                       height: 390,
@@ -249,17 +236,13 @@ class _InicioPageState extends State<InicioPage> {
         ),
       ),
 
-      // ============================================
-      // NAVEGACIÓN INFERIOR
-      // ============================================
+      // botones inferiores
 
       bottomNavigationBar: _barraNavegacion(),
     );
   }
 
-  // ==================================================
-  // BOTÓN PRINCIPAL
-  // ==================================================
+  // btn principal
 
   Widget _botonPrincipal({
     required String texto,
@@ -326,9 +309,7 @@ class _InicioPageState extends State<InicioPage> {
     );
   }
 
-  // ==================================================
-  // TARJETA DE MASCOTA
-  // ==================================================
+  // tarjeta mascota
 
   Widget _tarjetaMascota(
     Map<String, String> publicacion,
@@ -489,9 +470,7 @@ class _InicioPageState extends State<InicioPage> {
     );
   }
 
-  // ==================================================
-  // BARRA DE NAVEGACIÓN
-  // ==================================================
+  // barra de navegación
 
   Widget _barraNavegacion() {
     return Container(
@@ -564,9 +543,7 @@ class _InicioPageState extends State<InicioPage> {
     );
   }
 
-  // ==================================================
-  // ITEM DE NAVEGACIÓN
-  // ==================================================
+  // items de navegación
 
   Widget _itemNavegacion({
     required IconData icono,

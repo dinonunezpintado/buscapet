@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class InicioViewModel extends ChangeNotifier {
-  // ==========================================
-  // DATOS FALSOS DE LAS PUBLICACIONES
-  // ==========================================
+  // aquí se cargaran los datos de las publicaciones de la BD
 
   final List<Map<String, String>> publicaciones = [
     {

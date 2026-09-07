@@ -52,9 +52,7 @@ class _MapaPageState extends State<MapaPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // ==========================================
-            // ENCABEZADO
-            // ==========================================
+            // encabezado
 
             Container(
               height: 90,
@@ -102,9 +100,7 @@ class _MapaPageState extends State<MapaPage> {
               ),
             ),
 
-            // ==========================================
-            // CONTENIDO
-            // ==========================================
+            // contenido 
 
             Expanded(
               child: SingleChildScrollView(
@@ -112,10 +108,7 @@ class _MapaPageState extends State<MapaPage> {
                   children: [
                     const SizedBox(height: 22),
 
-                    // ==================================
-                    // MAPA
-                    // ==================================
-
+                    // mapa
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -159,9 +152,7 @@ class _MapaPageState extends State<MapaPage> {
 
                               MarkerLayer(
                                 markers: [
-                                  // ==========================
-                                  // UBICACIÓN DEL USUARIO
-                                  // ==========================
+                                  // ubicacion del usuario
 
                                   Marker(
                                     point: _ubicacionUsuario,
@@ -176,9 +167,7 @@ class _MapaPageState extends State<MapaPage> {
                                     ),
                                   ),
 
-                                  // ==========================
-                                  // UBICACIÓN DE LA MASCOTA
-                                  // ==========================
+                                  // ubicacion de la mascota
 
                                   Marker(
                                     point: ubicacionMascota,
@@ -202,9 +191,7 @@ class _MapaPageState extends State<MapaPage> {
 
                     const SizedBox(height: 22),
 
-                    // ==================================
-                    // BOTÓN MI UBICACIÓN
-                    // ==================================
+                    // btn mi ubicación 
 
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -251,9 +238,7 @@ class _MapaPageState extends State<MapaPage> {
 
                     const SizedBox(height: 16),
 
-                    // ==================================
-                    // BOTÓN CALCULAR RUTA
-                    // ==================================
+                    // btn calcular ruta
 
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -304,9 +289,7 @@ class _MapaPageState extends State<MapaPage> {
 
                     const SizedBox(height: 22),
 
-                    // ==================================
-                    // INFORMACIÓN DE LA RUTA
-                    // ==================================
+                    // info de la ruta
 
                     _tarjetaRuta(),
 
@@ -321,9 +304,7 @@ class _MapaPageState extends State<MapaPage> {
     );
   }
 
-  // ==================================================
-  // TARJETA DE RUTA
-  // ==================================================
+  // tarjeta de información de la ruta
 
   Widget _tarjetaRuta() {
     return Padding(
@@ -356,9 +337,7 @@ class _MapaPageState extends State<MapaPage> {
 
         child: Column(
           children: [
-            // ==================================
-            // TÍTULO
-            // ==================================
+            // titulo
 
             const Text(
               'RUTA HACIA LA MASCOTA',
