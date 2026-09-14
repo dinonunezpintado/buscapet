@@ -380,8 +380,7 @@ class _InicioPageState extends State<InicioPage> {
 
                   const SizedBox(height: 7),
 
-                  // ESTADO
-
+                  
                   Container(
                     padding:
                         const EdgeInsets.symmetric(
@@ -411,8 +410,7 @@ class _InicioPageState extends State<InicioPage> {
 
                   const SizedBox(height: 12),
 
-                  // UBICACIÓN
-
+                 
                   Row(
                     crossAxisAlignment:
                         CrossAxisAlignment.start,
@@ -440,8 +438,7 @@ class _InicioPageState extends State<InicioPage> {
 
                   const SizedBox(height: 10),
 
-                  // TIEMPO
-
+                  
                   Row(
                     children: [
                       const Icon(

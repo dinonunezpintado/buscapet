@@ -14,11 +14,7 @@ class MapaPage extends StatefulWidget {
 class _MapaPageState extends State<MapaPage> {
   final MapaViewModel _viewModel = MapaViewModel();
 
-  // Ubicación de ejemplo para esta entrega.
-  final LatLng _ubicacionUsuario = const LatLng(
-    -30.90914,
-    -55.54420,
-  );
+  final MapController _mapController = MapController();
 
   @override
   void initState() {
@@ -39,6 +35,23 @@ class _MapaPageState extends State<MapaPage> {
     setState(() {});
   }
 
+  Future<void> _usarMiUbicacion() async {
+    await _viewModel.obtenerUbicacion();
+
+    if (_viewModel.latitudUsuario != null &&
+        _viewModel.longitudUsuario != null) {
+      final ubicacionUsuario = LatLng(
+        _viewModel.latitudUsuario!,
+        _viewModel.longitudUsuario!,
+      );
+
+      _mapController.move(
+        ubicacionUsuario,
+        15,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final LatLng ubicacionMascota = LatLng(
@@ -52,7 +65,7 @@ class _MapaPageState extends State<MapaPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // encabezado
+            // ENCABEZADO
 
             Container(
               height: 90,
@@ -100,7 +113,6 @@ class _MapaPageState extends State<MapaPage> {
               ),
             ),
 
-            // contenido 
 
             Expanded(
               child: SingleChildScrollView(
@@ -108,7 +120,8 @@ class _MapaPageState extends State<MapaPage> {
                   children: [
                     const SizedBox(height: 22),
 
-                    // mapa
+                    // MAPA
+
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -121,13 +134,17 @@ class _MapaPageState extends State<MapaPage> {
                           height: 480,
 
                           child: FlutterMap(
-                            options: MapOptions(
-                                initialCenter: ubicacionMascota,
-                                initialZoom: 15,
+                            mapController: _mapController,
 
-                                onTap: (tapPosition, posicion) {
-                                _viewModel.seleccionarDestino(posicion);
-                                },
+                            options: MapOptions(
+                              initialCenter: ubicacionMascota,
+                              initialZoom: 15,
+
+                              onTap: (tapPosition, posicion) {
+                                _viewModel.seleccionarDestino(
+                                  posicion,
+                                );
+                              },
                             ),
 
                             children: [
@@ -139,35 +156,47 @@ class _MapaPageState extends State<MapaPage> {
                                     'com.example.buscapet',
                               ),
 
+                              // aqui me indica el trayecto por calles
                               if (_viewModel.rutaCalculada)
-                              PolylineLayer(
-                                polylines: [
-                                  Polyline(
-                                    points: _viewModel.puntosRuta,
-                                    strokeWidth: 6,
-                                    color: const Color(0xFFFF7A59),
-                                  ),
-                                ],
-                              ),
+                                PolylineLayer(
+                                  polylines: [
+                                    Polyline(
+                                      points:
+                                          _viewModel.puntosRuta,
+                                      strokeWidth: 6,
+                                      color:
+                                          const Color(0xFFFF7A59),
+                                    ),
+                                  ],
+                                ),
+
+                             
 
                               MarkerLayer(
                                 markers: [
-                                  // ubicacion del usuario
+                                  // aquí me muestra mi ubicación en el mapa
 
-                                  Marker(
-                                    point: _ubicacionUsuario,
-                                    width: 70,
-                                    height: 70,
+                                  if (_viewModel.latitudUsuario !=
+                                          null &&
+                                      _viewModel.longitudUsuario !=
+                                          null)
+                                    Marker(
+                                      point: LatLng(
+                                        _viewModel.latitudUsuario!,
+                                        _viewModel.longitudUsuario!,
+                                      ),
+                                      width: 70,
+                                      height: 70,
 
-                                    child: const Icon(
-                                      Icons.my_location,
-                                      color:
-                                          Color(0xFF20A39E),
-                                      size: 48,
+                                      child: const Icon(
+                                        Icons.my_location,
+                                        color:
+                                            Color(0xFF20A39E),
+                                        size: 48,
+                                      ),
                                     ),
-                                  ),
 
-                                  // ubicacion de la mascota
+                                  // aquí me muestra la ubicación de la mascota en el mapa
 
                                   Marker(
                                     point: ubicacionMascota,
@@ -191,8 +220,7 @@ class _MapaPageState extends State<MapaPage> {
 
                     const SizedBox(height: 22),
 
-                    // btn mi ubicación 
-
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -203,16 +231,21 @@ class _MapaPageState extends State<MapaPage> {
                         height: 70,
 
                         child: ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: _viewModel.obteniendoUbicacion
+                              ? null
+                              : _usarMiUbicacion,
 
                           icon: const Icon(
                             Icons.my_location,
                             size: 30,
                           ),
 
-                          label: const Text(
-                            'USAR MI UBICACIÓN',
-                            style: TextStyle(
+                          label: Text(
+                            _viewModel.obteniendoUbicacion
+                                ? 'OBTENIENDO...'
+                                : 'USAR MI UBICACIÓN',
+
+                            style: const TextStyle(
                               fontSize: 21,
                               fontWeight: FontWeight.bold,
                             ),
@@ -236,10 +269,29 @@ class _MapaPageState extends State<MapaPage> {
                       ),
                     ),
 
+                    
+                    if (_viewModel.mensajeError != null)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 12,
+                          left: 20,
+                          right: 20,
+                        ),
+
+                        child: Text(
+                          _viewModel.mensajeError!,
+                          textAlign: TextAlign.center,
+
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+
                     const SizedBox(height: 16),
 
-                    // btn calcular ruta
-
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -251,19 +303,22 @@ class _MapaPageState extends State<MapaPage> {
 
                         child: ElevatedButton.icon(
                           onPressed: _viewModel.calculandoRuta
-                            ? null
-                            : () async {
-                                await _viewModel.calcularRuta();
-                              },
+                              ? null
+                              : () async {
+                                  await _viewModel.calcularRuta();
+                                },
 
                           icon: const Icon(
                             Icons.alt_route,
                             size: 30,
                           ),
 
-                          label: const Text(
-                            'CALCULAR RUTA',
-                            style: TextStyle(
+                          label: Text(
+                            _viewModel.calculandoRuta
+                                ? 'CALCULANDO...'
+                                : 'CALCULAR RUTA',
+
+                            style: const TextStyle(
                               fontSize: 21,
                               fontWeight: FontWeight.bold,
                             ),
@@ -289,8 +344,7 @@ class _MapaPageState extends State<MapaPage> {
 
                     const SizedBox(height: 22),
 
-                    // info de la ruta
-
+                    
                     _tarjetaRuta(),
 
                     const SizedBox(height: 25),
@@ -304,7 +358,7 @@ class _MapaPageState extends State<MapaPage> {
     );
   }
 
-  // tarjeta de información de la ruta
+ 
 
   Widget _tarjetaRuta() {
     return Padding(
@@ -337,7 +391,7 @@ class _MapaPageState extends State<MapaPage> {
 
         child: Column(
           children: [
-            // titulo
+            // TÍTULO
 
             const Text(
               'RUTA HACIA LA MASCOTA',
@@ -356,7 +410,7 @@ class _MapaPageState extends State<MapaPage> {
                   MainAxisAlignment.center,
 
               children: [
-                // DISTANCIA
+                
 
                 const Icon(
                   Icons.location_on,
