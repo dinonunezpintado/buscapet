@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "387929393051",
+    "project_id": "buscapet-89e1e",
+    "storage_bucket": "buscapet-89e1e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387929393051:android:261e46a9eff3cb102e833e",
+        "android_client_info": {
+          "package_name": "com.example.buscapet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "387929393051-5qt5qslo74lhgr93gq0kvmjf1rra9p3b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.buscapet",
+            "certificate_hash": "08c7b80248cf8437b1310bdfb597e525e3213b85"
+          }
+        },
+        {
+          "client_id": "387929393051-ir6fj8gckhqiajeqe5nfsel9s1ega4a3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRgMVEjWabfAKuHl1qZxOszzj56GZphXc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "387929393051-ir6fj8gckhqiajeqe5nfsel9s1ega4a3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
