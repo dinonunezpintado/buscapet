@@ -20,8 +20,7 @@ class _AutenticacionPageState
   final TextEditingController _emailController =
       TextEditingController();
 
-  final TextEditingController
-      _contrasenaController =
+  final TextEditingController _contrasenaController =
       TextEditingController();
 
   @override
@@ -29,6 +28,7 @@ class _AutenticacionPageState
     _emailController.dispose();
     _contrasenaController.dispose();
     _viewModel.dispose();
+
     super.dispose();
   }
 
@@ -47,6 +47,7 @@ class _AutenticacionPageState
           ),
         ),
       );
+
       return;
     }
 
@@ -129,186 +130,109 @@ class _AutenticacionPageState
           body: SafeArea(
             child: Center(
               child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.all(24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 20,
+                ),
                 child: Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment.center,
                   children: [
+                    // logo
                     const Icon(
                       Icons.pets,
-                      size: 70,
-                      color:
-                          Color(0xFF20A39E),
+                      size: 52,
+                      color: Color(0xFF20A39E),
                     ),
-                    const SizedBox(height: 10),
+
+                    const SizedBox(height: 6),
+
                     const Text(
                       'BuscaPet',
                       style: TextStyle(
-                        fontSize: 32,
-                        fontWeight:
-                            FontWeight.bold,
-                        color:
-                            Color(0xFF20A39E),
+                        fontSize: 27,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF20A39E),
                       ),
                     ),
-                    const SizedBox(height: 40),
+
+                    const SizedBox(height: 28),
+
+                    // título
                     const Align(
-                      alignment:
-                          Alignment.centerLeft,
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         'Iniciar sesión',
                         style: TextStyle(
-                          fontSize: 26,
-                          fontWeight:
-                              FontWeight.bold,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF222222),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller:
-                          _emailController,
-                      keyboardType:
-                          TextInputType
-                              .emailAddress,
-                      decoration:
-                          InputDecoration(
-                        labelText:
-                            'Correo electrónico',
-                        prefixIcon:
-                            const Icon(
-                          Icons
-                              .email_outlined,
-                        ),
-                        border:
-                            OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius
-                                  .circular(12),
-                        ),
-                      ),
+
+                    const SizedBox(height: 16),
+
+                    // correo
+                    _campoTexto(
+                      controller: _emailController,
+                      etiqueta: 'Correo electrónico',
+                      icono: Icons.email_outlined,
+                      tipoTeclado:
+                          TextInputType.emailAddress,
                     ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller:
-                          _contrasenaController,
-                      obscureText: true,
-                      decoration:
-                          InputDecoration(
-                        labelText:
-                            'Contraseña',
-                        prefixIcon:
-                            const Icon(
-                          Icons.lock_outline,
-                        ),
-                        border:
-                            OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius
-                                  .circular(12),
-                        ),
-                      ),
+
+                    const SizedBox(height: 12),
+
+                    // contraseña
+                    _campoTexto(
+                      controller: _contrasenaController,
+                      etiqueta: 'Contraseña',
+                      icono: Icons.lock_outline,
+                      ocultarTexto: true,
                     ),
-                    const SizedBox(height: 25),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child:
-                          ElevatedButton(
-                        onPressed:
-                            _viewModel.cargando
-                                ? null
-                                : _iniciarSesion,
-                        style:
-                            ElevatedButton
-                                .styleFrom(
-                          backgroundColor:
-                              const Color(
-                                  0xFF20A39E),
-                          foregroundColor:
-                              Colors.white,
-                          shape:
-                              RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius
-                                    .circular(12),
-                          ),
-                        ),
-                        child: _viewModel
-                                .cargando
-                            ? const CircularProgressIndicator(
-                                color:
-                                    Colors.white,
-                              )
-                            : const Text(
-                                'INICIAR SESIÓN',
-                                style:
-                                    TextStyle(
-                                  fontWeight:
-                                      FontWeight
-                                          .bold,
-                                ),
-                              ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child:
-                          OutlinedButton
-                              .icon(
-                        onPressed:
-                            _viewModel.cargando
-                                ? null
-                                : _iniciarSesionConGoogle,
-                        icon: const Icon(
-                          Icons
-                              .account_circle_outlined,
-                        ),
-                        label: const Text(
-                          'CONTINUAR CON GOOGLE',
-                        ),
-                        style:
-                            OutlinedButton
-                                .styleFrom(
-                          foregroundColor:
-                              Colors.black87,
-                          side:
-                              const BorderSide(
-                            color: Colors.grey,
-                          ),
-                          shape:
-                              RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius
-                                    .circular(12),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 25),
+
+                    const SizedBox(height: 18),
+
+                    // botón iniciar sesión
+                    _botonPrincipal(),
+
+                    const SizedBox(height: 12),
+
+                    // botón de google
+                    _botonGoogle(),
+
+                    const SizedBox(height: 18),
+
+                    // registro
                     Row(
                       mainAxisAlignment:
-                          MainAxisAlignment
-                              .center,
+                          MainAxisAlignment.center,
                       children: [
                         const Text(
-                          '¿No tienes una cuenta? ',
+                          '¿No tienes una cuenta?',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF555555),
+                          ),
                         ),
+
                         TextButton(
-                          onPressed:
-                              _abrirRegistro,
+                          onPressed: _abrirRegistro,
+                          style: TextButton.styleFrom(
+                            padding:
+                                const EdgeInsets.only(
+                              left: 6,
+                            ),
+                            minimumSize: Size.zero,
+                            tapTargetSize:
+                                MaterialTapTargetSize
+                                    .shrinkWrap,
+                          ),
                           child: const Text(
                             'REGÍSTRATE',
-                            style:
-                                TextStyle(
-                              color: Color(
-                                  0xFF20A39E),
-                              fontWeight:
-                                  FontWeight
-                                      .bold,
+                            style: TextStyle(
+                              color: Color(0xFF20A39E),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -321,6 +245,164 @@ class _AutenticacionPageState
           ),
         );
       },
+    );
+  }
+
+  // campo de texto
+  Widget _campoTexto({
+    required TextEditingController controller,
+    required String etiqueta,
+    required IconData icono,
+    TextInputType? tipoTeclado,
+    bool ocultarTexto = false,
+  }) {
+    return SizedBox(
+      height: 60,
+      child: TextField(
+        controller: controller,
+        keyboardType: tipoTeclado,
+        obscureText: ocultarTexto,
+        style: const TextStyle(
+          fontSize: 15,
+          color: Color(0xFF444444),
+        ),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          labelText: etiqueta,
+          labelStyle: const TextStyle(
+            fontSize: 15,
+            color: Color(0xFF666666),
+          ),
+          prefixIcon: Icon(
+            icono,
+            color: const Color(0xFF20A39E),
+            size: 22,
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(14),
+            borderSide: const BorderSide(
+              color: Color(0xFFD9DEDC),
+              width: 1,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(14),
+            borderSide: const BorderSide(
+              color: Color(0xFF20A39E),
+              width: 1.5,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // botón principal
+  Widget _botonPrincipal() {
+    return Container(
+      width: double.infinity,
+      height: 52,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF20A39E)
+                .withValues(alpha: 0.20),
+            blurRadius: 9,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ElevatedButton(
+        onPressed: _viewModel.cargando
+            ? null
+            : _iniciarSesion,
+        style: ElevatedButton.styleFrom(
+          backgroundColor:
+              const Color(0xFF20A39E),
+          foregroundColor: Colors.white,
+          disabledBackgroundColor:
+              const Color(0xFF20A39E)
+                  .withValues(alpha: 0.55),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(14),
+          ),
+        ),
+        child: _viewModel.cargando
+            ? const SizedBox(
+                width: 22,
+                height: 22,
+                child:
+                    CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: Colors.white,
+                ),
+              )
+            : const Text(
+                'INICIAR SESIÓN',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+      ),
+    );
+  }
+
+  // botón de google
+  Widget _botonGoogle() {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: OutlinedButton(
+        onPressed: _viewModel.cargando
+            ? null
+            : _iniciarSesionConGoogle,
+        style: OutlinedButton.styleFrom(
+          foregroundColor:
+              const Color(0xFF333333),
+          backgroundColor: Colors.white,
+          side: const BorderSide(
+            color: Color(0xFFD9DEDC),
+            width: 1,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(14),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment:
+              MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/google_logo.png',
+              width: 22,
+              height: 22,
+            ),
+
+            const SizedBox(width: 10),
+
+            const Text(
+              'Continuar con Google',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

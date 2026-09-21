@@ -47,7 +47,7 @@ class _MapaPageState extends State<MapaPage> {
 
       _mapController.move(
         ubicacionUsuario,
-        15,
+        16,
       );
     }
   }
@@ -61,29 +61,27 @@ class _MapaPageState extends State<MapaPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F9F6),
-
       body: SafeArea(
         child: Column(
           children: [
-            // ENCABEZADO
-
+            // encabezado
             Container(
-              height: 90,
+              height: 64,
               width: double.infinity,
               color: const Color(0xFF20A39E),
-
               child: Row(
                 children: [
-                  const SizedBox(width: 18),
+                  const SizedBox(width: 8),
 
                   IconButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
+                    padding: EdgeInsets.zero,
                     icon: const Icon(
                       Icons.arrow_back,
                       color: Colors.white,
-                      size: 32,
+                      size: 27,
                     ),
                   ),
 
@@ -92,90 +90,81 @@ class _MapaPageState extends State<MapaPage> {
                   const Icon(
                     Icons.pets,
                     color: Colors.white,
-                    size: 45,
+                    size: 32,
                   ),
 
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
 
                   const Text(
                     'BuscaPet',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 34,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
 
                   const Spacer(),
 
-                  const SizedBox(width: 50),
+                  const SizedBox(width: 42),
                 ],
               ),
             ),
-
 
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 12),
 
-                    // MAPA
-
+                    // mapa
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
+                        horizontal: 16,
                       ),
-
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
-
+                        borderRadius: BorderRadius.circular(18),
                         child: SizedBox(
-                          height: 480,
-
+                          height: 360,
                           child: FlutterMap(
                             mapController: _mapController,
-
                             options: MapOptions(
                               initialCenter: ubicacionMascota,
-                              initialZoom: 15,
-
-                              onTap: (tapPosition, posicion) {
+                              initialZoom: 16,
+                              onTap: (
+                                tapPosition,
+                                posicion,
+                              ) {
                                 _viewModel.seleccionarDestino(
                                   posicion,
                                 );
                               },
                             ),
-
                             children: [
                               TileLayer(
                                 urlTemplate:
                                     'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-
                                 userAgentPackageName:
                                     'com.example.buscapet',
                               ),
 
-                              // aqui me indica el trayecto por calles
+                              // muestra el trayecto por calles
                               if (_viewModel.rutaCalculada)
                                 PolylineLayer(
                                   polylines: [
                                     Polyline(
                                       points:
                                           _viewModel.puntosRuta,
-                                      strokeWidth: 6,
+                                      strokeWidth: 5,
                                       color:
                                           const Color(0xFFFF7A59),
                                     ),
                                   ],
                                 ),
 
-                             
-
                               MarkerLayer(
                                 markers: [
-                                  // aquí me muestra mi ubicación en el mapa
-
+                                  // ubicación del usuario
                                   if (_viewModel.latitudUsuario !=
                                           null &&
                                       _viewModel.longitudUsuario !=
@@ -185,29 +174,26 @@ class _MapaPageState extends State<MapaPage> {
                                         _viewModel.latitudUsuario!,
                                         _viewModel.longitudUsuario!,
                                       ),
-                                      width: 70,
-                                      height: 70,
-
+                                      width: 50,
+                                      height: 50,
                                       child: const Icon(
                                         Icons.my_location,
                                         color:
                                             Color(0xFF20A39E),
-                                        size: 48,
+                                        size: 34,
                                       ),
                                     ),
 
-                                  // aquí me muestra la ubicación de la mascota en el mapa
-
+                                  // ubicación de la mascota
                                   Marker(
                                     point: ubicacionMascota,
-                                    width: 70,
-                                    height: 70,
-
+                                    width: 50,
+                                    height: 50,
                                     child: const Icon(
                                       Icons.location_on,
                                       color:
                                           Color(0xFFFF7A59),
-                                      size: 58,
+                                      size: 42,
                                     ),
                                   ),
                                 ],
@@ -218,136 +204,116 @@ class _MapaPageState extends State<MapaPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 14),
 
-                    
+                    // botón ubicación
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
+                        horizontal: 16,
                       ),
-
                       child: SizedBox(
                         width: double.infinity,
-                        height: 70,
-
+                        height: 52,
                         child: ElevatedButton.icon(
-                          onPressed: _viewModel.obteniendoUbicacion
-                              ? null
-                              : _usarMiUbicacion,
-
+                          onPressed:
+                              _viewModel.obteniendoUbicacion
+                                  ? null
+                                  : _usarMiUbicacion,
                           icon: const Icon(
                             Icons.my_location,
-                            size: 30,
+                            size: 21,
                           ),
-
                           label: Text(
                             _viewModel.obteniendoUbicacion
                                 ? 'OBTENIENDO...'
                                 : 'USAR MI UBICACIÓN',
-
                             style: const TextStyle(
-                              fontSize: 21,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 const Color(0xFFFF7A59),
-
                             foregroundColor: Colors.white,
-
                             elevation: 3,
-
-                            shape:
-                                RoundedRectangleBorder(
+                            shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(18),
+                                  BorderRadius.circular(14),
                             ),
                           ),
                         ),
                       ),
                     ),
 
-                    
                     if (_viewModel.mensajeError != null)
                       Padding(
                         padding: const EdgeInsets.only(
-                          top: 12,
-                          left: 20,
-                          right: 20,
+                          top: 10,
+                          left: 16,
+                          right: 16,
                         ),
-
                         child: Text(
                           _viewModel.mensajeError!,
                           textAlign: TextAlign.center,
-
                           style: const TextStyle(
                             color: Colors.red,
-                            fontSize: 16,
+                            fontSize: 13,
                           ),
                         ),
                       ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
 
-                    
+                    // botón calcular ruta
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
+                        horizontal: 16,
                       ),
-
                       child: SizedBox(
                         width: double.infinity,
-                        height: 70,
-
+                        height: 52,
                         child: ElevatedButton.icon(
-                          onPressed: _viewModel.calculandoRuta
-                              ? null
-                              : () async {
-                                  await _viewModel.calcularRuta();
-                                },
-
+                          onPressed:
+                              _viewModel.calculandoRuta
+                                  ? null
+                                  : () async {
+                                      await _viewModel
+                                          .calcularRuta();
+                                    },
                           icon: const Icon(
                             Icons.alt_route,
-                            size: 30,
+                            size: 21,
                           ),
-
                           label: Text(
                             _viewModel.calculandoRuta
                                 ? 'CALCULANDO...'
                                 : 'CALCULAR RUTA',
-
                             style: const TextStyle(
-                              fontSize: 21,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
-                                const Color(0xFFFF7A59),
-
+                                const Color(0xFF20A39E),
                             foregroundColor: Colors.white,
-
                             elevation: 3,
-
-                            shape:
-                                RoundedRectangleBorder(
+                            shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(18),
+                                  BorderRadius.circular(14),
                             ),
                           ),
                         ),
                       ),
                     ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 14),
 
-                    
+                    // información de la ruta
                     _tarjetaRuta(),
 
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 18),
                   ],
                 ),
               ),
@@ -358,103 +324,87 @@ class _MapaPageState extends State<MapaPage> {
     );
   }
 
- 
-
+  // tarjeta de ruta
   Widget _tarjetaRuta() {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 20,
+        horizontal: 16,
       ),
-
       child: Container(
         width: double.infinity,
-
-        padding: const EdgeInsets.all(24),
-
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
-
-          borderRadius: BorderRadius.circular(24),
-
+          borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(
-                alpha: 0.10,
+                alpha: 0.08,
               ),
-
               blurRadius: 8,
-
               offset: const Offset(0, 3),
             ),
           ],
         ),
-
         child: Column(
           children: [
-            // TÍTULO
-
             const Text(
               'RUTA HACIA LA MASCOTA',
-
               style: TextStyle(
                 color: Color(0xFF20A39E),
-                fontSize: 24,
+                fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
             ),
 
-            const SizedBox(height: 22),
+            const SizedBox(height: 12),
 
             Row(
               mainAxisAlignment:
                   MainAxisAlignment.center,
-
               children: [
-                
-
                 const Icon(
                   Icons.location_on,
                   color: Color(0xFF20A39E),
-                  size: 34,
+                  size: 25,
                 ),
 
-                const SizedBox(width: 8),
+                const SizedBox(width: 5),
 
                 Text(
                   '${_viewModel.distancia.toStringAsFixed(1)} km',
-
                   style: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF555555),
                   ),
                 ),
 
-                const SizedBox(width: 30),
+                const SizedBox(width: 22),
 
                 Container(
-                  height: 40,
+                  height: 28,
                   width: 1,
                   color: const Color(0xFFDDDDDD),
                 ),
 
-                const SizedBox(width: 30),
-
-                // TIEMPO
+                const SizedBox(width: 22),
 
                 const Icon(
                   Icons.access_time,
                   color: Color(0xFF20A39E),
-                  size: 34,
+                  size: 25,
                 ),
 
-                const SizedBox(width: 8),
+                const SizedBox(width: 5),
 
                 Text(
                   '${_viewModel.tiempoEstimado} min',
-
                   style: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF555555),
                   ),

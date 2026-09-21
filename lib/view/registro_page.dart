@@ -128,11 +128,15 @@ class _RegistroPageState extends State<RegistroPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F9F6),
       appBar: AppBar(
+        toolbarHeight: 64,
         backgroundColor: const Color(0xFF20A39E),
         foregroundColor: Colors.white,
+        elevation: 0,
+        titleSpacing: 0,
         title: const Text(
           'Crear cuenta',
           style: TextStyle(
+            fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -140,36 +144,39 @@ class _RegistroPageState extends State<RegistroPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
-            horizontal: 28,
-            vertical: 30,
+            horizontal: 24,
+            vertical: 18,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // logo
               const Center(
                 child: Icon(
                   Icons.pets,
-                  size: 60,
+                  size: 52,
                   color: Color(0xFF20A39E),
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              const Center(
-                child: Text(
-                  '¡Bienvenido a BuscaPet!',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF444444),
-                  ),
-                  textAlign: TextAlign.center,
                 ),
               ),
 
               const SizedBox(height: 8),
 
+              // título
+              const Center(
+                child: Text(
+                  '¡Bienvenido a BuscaPet!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF333333),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              const SizedBox(height: 5),
+
+              // subtítulo
               const Center(
                 child: Text(
                   'Creá tu cuenta para comenzar.',
@@ -181,141 +188,114 @@ class _RegistroPageState extends State<RegistroPage> {
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
+              // nombre y apellido
               Row(
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: _campoTexto(
                       controller: _nombreController,
-                      decoration: InputDecoration(
-                        labelText: 'Nombre',
-                        prefixIcon: const Icon(
-                          Icons.person_outline,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(14),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
+                      etiqueta: 'Nombre',
+                      icono: Icons.person_outline,
                     ),
                   ),
 
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
 
                   Expanded(
-                    child: TextField(
+                    child: _campoTexto(
                       controller: _apellidoController,
-                      decoration: InputDecoration(
-                        labelText: 'Apellido',
-                        prefixIcon: const Icon(
-                          Icons.person_outline,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(14),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
+                      etiqueta: 'Apellido',
+                      icono: Icons.person_outline,
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 12),
 
-              TextField(
+              // correo
+              _campoTexto(
                 controller: _emailController,
-                keyboardType:
+                etiqueta: 'Correo electrónico',
+                icono: Icons.email_outlined,
+                tipoTeclado:
                     TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: 'Correo electrónico',
-                  prefixIcon: const Icon(
-                    Icons.email_outlined,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(14),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
               ),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 12),
 
-              TextField(
+              // contraseña
+              _campoTexto(
                 controller: _contrasenaController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Contraseña',
-                  prefixIcon: const Icon(
-                    Icons.lock_outline,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(14),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
+                etiqueta: 'Contraseña',
+                icono: Icons.lock_outline,
+                ocultarTexto: true,
               ),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 12),
 
-              TextField(
+              // repetir contraseña
+              _campoTexto(
                 controller:
                     _repetirContrasenaController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Repetir contraseña',
-                  prefixIcon: const Icon(
-                    Icons.lock_outline,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(14),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
+                etiqueta: 'Repetir contraseña',
+                icono: Icons.lock_outline,
+                ocultarTexto: true,
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 18),
 
-              SizedBox(
+              // botón crear cuenta
+              Container(
                 width: double.infinity,
                 height: 52,
+                decoration: BoxDecoration(
+                  borderRadius:
+                      BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFFF7A59)
+                          .withValues(alpha: 0.22),
+                      blurRadius: 9,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
                 child: ElevatedButton(
                   onPressed: _viewModel.cargando
                       ? null
                       : _crearCuenta,
-                  style: ElevatedButton.styleFrom(
+                  style:
+                      ElevatedButton.styleFrom(
                     backgroundColor:
                         const Color(0xFFFF7A59),
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
+                    disabledBackgroundColor:
+                        const Color(0xFFFF7A59)
+                            .withValues(alpha: 0.55),
+                    elevation: 0,
+                    shape:
+                        RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(14),
                     ),
                   ),
                   child: _viewModel.cargando
                       ? const SizedBox(
-                          width: 24,
-                          height: 24,
+                          width: 22,
+                          height: 22,
                           child:
                               CircularProgressIndicator(
                             color: Colors.white,
-                            strokeWidth: 3,
+                            strokeWidth: 2.5,
                           ),
                         )
                       : const Text(
                           'CREAR CUENTA',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight:
                                 FontWeight.bold,
                           ),
@@ -323,23 +303,95 @@ class _RegistroPageState extends State<RegistroPage> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 14),
 
+              // volver al inicio de sesión
               Center(
                 child: TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
+                  style: TextButton.styleFrom(
+                    padding:
+                        const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 6,
+                    ),
+                    minimumSize: Size.zero,
+                    tapTargetSize:
+                        MaterialTapTargetSize
+                            .shrinkWrap,
+                  ),
                   child: const Text(
                     '¿Ya tenés una cuenta? INICIÁ SESIÓN',
                     style: TextStyle(
                       color: Color(0xFF20A39E),
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
+
+              const SizedBox(height: 8),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // campo de texto
+  Widget _campoTexto({
+    required TextEditingController controller,
+    required String etiqueta,
+    required IconData icono,
+    TextInputType? tipoTeclado,
+    bool ocultarTexto = false,
+  }) {
+    return SizedBox(
+      height: 60,
+      child: TextField(
+        controller: controller,
+        keyboardType: tipoTeclado,
+        obscureText: ocultarTexto,
+        style: const TextStyle(
+          fontSize: 15,
+          color: Color(0xFF444444),
+        ),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          labelText: etiqueta,
+          labelStyle: const TextStyle(
+            fontSize: 15,
+            color: Color(0xFF666666),
+          ),
+          prefixIcon: Icon(
+            icono,
+            color: const Color(0xFF20A39E),
+            size: 22,
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(14),
+            borderSide: const BorderSide(
+              color: Color(0xFFD9DEDC),
+              width: 1,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(14),
+            borderSide: const BorderSide(
+              color: Color(0xFF20A39E),
+              width: 1.5,
+            ),
           ),
         ),
       ),
