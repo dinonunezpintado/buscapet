@@ -1,13 +1,27 @@
 
-import { applicationDefault, getApps, initializeApp } from 'firebase-admin/app';
+import {
+  applicationDefault,
+  cert,
+  getApps,
+  initializeApp,
+} from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getMessaging } from 'firebase-admin/messaging';
 
+const credencialesFirebase = process.env.FIREBASE_SERVICE_ACCOUNT;
+
 if (getApps().length === 0) {
-  initializeApp({
-    credential: applicationDefault(),
-    projectId: 'buscapet-89e1e',
-  });
+  if (credencialesFirebase) {
+    initializeApp({
+      credential: cert(JSON.parse(credencialesFirebase)),
+      projectId: 'buscapet-89e1e',
+    });
+  } else {
+    initializeApp({
+      credential: applicationDefault(),
+      projectId: 'buscapet-89e1e',
+    });
+  }
 }
 
 const db = getFirestore();
