@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BuscaPet - Notificaciones</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 30px 16px;
+      font-family: Arial, sans-serif;
+      background: #F7F9F6;
+      color: #263238;
+    }
+
+    .contenedor {
+      max-width: 520px;
+      margin: 30px auto;
+      padding: 28px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 18px #00000012;
+    }
+
+    .logo {
+      text-align: center;
+      color: #20A39E;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .descripcion {
+      text-align: center;
+      color: #687579;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #D5DEDA;
+      border-radius: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: 2px solid #20A39E;
+      border-color: #20A39E;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #20A39E;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #188781;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #resultado {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      line-height: 1.5;
+      display: none;
+      overflow-wrap: anywhere;
+    }
+
+    .exito {
+      display: block !important;
+      background: #E5F6EF;
+      color: #176B48;
+    }
+
+    .error {
+      display: block !important;
+      background: #FDEBE8;
+      color: #A32D20;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="contenedor">
+    <div class="logo">🐾 BuscaPet</div>
+
+    <h1>Enviar notificación</h1>
+
+    <p class="descripcion">
+      Enviá una notificación al dispositivo de un usuario de BuscaPet.
+    </p>
+
+    <form id="formulario">
+      <label for="usuarioId">ID del usuario</label>
+      <input
+        type="text"
+        id="usuarioId"
+        placeholder="Ingresá el ID del usuario"
+        required
+      >
+
+      <label for="titulo">Título</label>
+      <input
+        type="text"
+        id="titulo"
+        value="BuscaPet"
+        maxlength="100"
+        required
+      >
+
+      <label for="mensaje">Mensaje</label>
+      <textarea
+        id="mensaje"
+        placeholder="Escribí el mensaje de la notificación"
+        maxlength="500"
+        required
+      ></textarea>
+
+      <button type="submit" id="botonEnviar">
+        Enviar notificación
+      </button>
+    </form>
+
+    <div id="resultado" role="status" aria-live="polite"></div>
+  </main>
+
+  <script>
+    const formulario = document.getElementById('formulario');
+    const botonEnviar = document.getElementById('botonEnviar');
+    const resultado = document.getElementById('resultado');
+
+    formulario.addEventListener('submit', async function (evento) {
+      evento.preventDefault();
+
+      const usuarioId = document.getElementById('usuarioId').value.trim();
+      const titulo = document.getElementById('titulo').value.trim();
+      const mensaje = document.getElementById('mensaje').value.trim();
+
+      resultado.className = '';
+      resultado.style.display = 'none';
+
+      botonEnviar.disabled = true;
+      botonEnviar.textContent = 'Enviando...';
+
+      try {
+        const respuesta = await fetch('/api/notificar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            usuarioId: usuarioId,
+            titulo: titulo,
+            mensaje: mensaje
+          })
+        });
+
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+          throw new Error(datos.error || 'No se pudo enviar la notificación.');
+        }
+
+        resultado.textContent =
+          datos.mensaje || 'Notificación enviada correctamente.';
+        resultado.className = 'exito';
+      } catch (error) {
+        resultado.textContent =
+          error.message || 'Ocurrió un error al enviar la notificación.';
+        resultado.className = 'error';
+      } finally {
+        botonEnviar.disabled = false;
+        botonEnviar.textContent = 'Enviar notificación';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,79 +1,70 @@
-import {
-  applicationDefault,
-  getApps,
-  initializeApp,
-} from 'firebase-admin/app';
 
+import { applicationDefault, getApps, initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-
 import { getMessaging } from 'firebase-admin/messaging';
 
 if (getApps().length === 0) {
   initializeApp({
     credential: applicationDefault(),
+    projectId: 'buscapet-89e1e',
   });
 }
 
-const firestore = getFirestore();
+const db = getFirestore();
 const mensajeria = getMessaging();
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
+  if (req.method !== 'POST') {
     return res.status(405).json({
-      error: 'Este endpoint requiere una solicitud GET.',
+      error: 'Método no permitido. Utilizá POST.',
     });
   }
 
   try {
-    const usuarioId = req.query.usuarioId;
+    const { usuarioId, titulo, mensaje } = req.body || {};
 
-    if (!usuarioId) {
+    if (!usuarioId || !titulo || !mensaje) {
       return res.status(400).json({
-        error: 'Debes enviar el usuarioId.',
+        error: 'Debés completar el ID del usuario, el título y el mensaje.',
       });
     }
 
-    const documentoUsuario = await firestore
+    const documento = await db
       .collection('usuarios')
-      .doc(usuarioId)
+      .doc(usuarioId.trim())
       .get();
 
-    if (!documentoUsuario.exists) {
+    if (!documento.exists) {
       return res.status(404).json({
-        error: 'No se encontró el usuario.',
+        error: 'No se encontró el usuario en Firestore.',
       });
     }
 
-    const datosUsuario = documentoUsuario.data();
+    const token = documento.data()?.tokenFCM;
 
-    const tokenFCM = datosUsuario?.tokenFCM;
-
-    if (!tokenFCM) {
+    if (!token) {
       return res.status(400).json({
-        error: 'El usuario no tiene un token FCM registrado.',
+        error: 'El usuario no tiene un token de notificaciones registrado.',
       });
     }
 
     const respuesta = await mensajeria.send({
-      token: tokenFCM,
+      token: token,
       notification: {
-        title: 'BuscaPet',
-        body: 'Esta es una notificación enviada desde la API.',
+        title: titulo.trim(),
+        body: mensaje.trim(),
       },
     });
 
     return res.status(200).json({
       mensaje: 'Notificación enviada correctamente.',
-      messageId: respuesta,
+      idMensaje: respuesta,
     });
   } catch (error) {
-    console.error(
-      'ERROR AL ENVIAR NOTIFICACIÓN:',
-      error,
-    );
+    console.error('Error al enviar la notificación:', error);
 
     return res.status(500).json({
-      error: 'No se pudo enviar la notificación.',
+      error: 'No se pudo enviar la notificación. Revisá la terminal de la API.',
     });
   }
 }
