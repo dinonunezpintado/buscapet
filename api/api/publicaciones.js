@@ -40,6 +40,19 @@ module.exports = async function handler(req, res) {
 
     const publicaciones = resultado.docs.map((documento) => {
       const datos = documento.data();
+      const valorFecha = datos.fechaCreacion;
+
+      let fechaCreacion = null;
+
+      if (valorFecha && typeof valorFecha.toDate === 'function') {
+        fechaCreacion = valorFecha.toDate().toISOString();
+      } else if (valorFecha instanceof Date) {
+        fechaCreacion = valorFecha.toISOString();
+      } else if (typeof valorFecha === 'string') {
+        fechaCreacion = valorFecha;
+      } else if (typeof valorFecha === 'number') {
+        fechaCreacion = new Date(valorFecha).toISOString();
+      }
 
       return {
         id: documento.id,
@@ -54,11 +67,16 @@ module.exports = async function handler(req, res) {
         descripcion: datos.descripcion || '',
         urlImagen: datos.urlImagen || '',
         destacada: datos.destacada === true,
+        fechaCreacion,
       };
     });
 
     publicaciones.sort((a, b) => {
-      return a.nombreMascota.localeCompare(b.nombreMascota);
+      if (!a.fechaCreacion && !b.fechaCreacion) return 0;
+      if (!a.fechaCreacion) return 1;
+      if (!b.fechaCreacion) return -1;
+
+      return new Date(b.fechaCreacion) - new Date(a.fechaCreacion);
     });
 
     return res.status(200).json({
