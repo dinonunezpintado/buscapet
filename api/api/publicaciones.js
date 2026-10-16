@@ -54,6 +54,19 @@ module.exports = async function handler(req, res) {
         fechaCreacion = new Date(valorFecha).toISOString();
       }
 
+      const convertirCoordenada = (valor) => {
+        if (typeof valor === 'number' && Number.isFinite(valor)) {
+          return valor;
+        }
+
+        if (typeof valor === 'string' && valor.trim() !== '') {
+          const numero = Number(valor);
+          return Number.isFinite(numero) ? numero : null;
+        }
+
+        return null;
+      };
+
       return {
         id: documento.id,
         nombreMascota: datos.nombreMascota || '',
@@ -68,6 +81,8 @@ module.exports = async function handler(req, res) {
         urlImagen: datos.urlImagen || '',
         destacada: datos.destacada === true,
         fechaCreacion,
+        latitud: convertirCoordenada(datos.latitud),
+        longitud: convertirCoordenada(datos.longitud),
       };
     });
 
