@@ -24,6 +24,41 @@ if (getApps().length === 0) {
   }
 }
 
+function convertirFecha(valor) {
+  if (valor && typeof valor.toDate === 'function') {
+    return valor.toDate().toISOString();
+  }
+
+  if (valor instanceof Date) {
+    return valor.toISOString();
+  }
+
+  if (typeof valor === 'string' && valor.trim() !== '') {
+    const fecha = new Date(valor);
+    return Number.isNaN(fecha.getTime()) ? null : fecha.toISOString();
+  }
+
+  if (typeof valor === 'number') {
+    const fecha = new Date(valor);
+    return Number.isNaN(fecha.getTime()) ? null : fecha.toISOString();
+  }
+
+  return null;
+}
+
+function convertirCoordenada(valor) {
+  if (typeof valor === 'number' && Number.isFinite(valor)) {
+    return valor;
+  }
+
+  if (typeof valor === 'string' && valor.trim() !== '') {
+    const numero = Number(valor);
+    return Number.isFinite(numero) ? numero : null;
+  }
+
+  return null;
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -40,35 +75,10 @@ module.exports = async function handler(req, res) {
 
     const publicaciones = resultado.docs.map((documento) => {
       const datos = documento.data();
-      const valorFecha = datos.fechaCreacion;
-
-      let fechaCreacion = null;
-
-      if (valorFecha && typeof valorFecha.toDate === 'function') {
-        fechaCreacion = valorFecha.toDate().toISOString();
-      } else if (valorFecha instanceof Date) {
-        fechaCreacion = valorFecha.toISOString();
-      } else if (typeof valorFecha === 'string') {
-        fechaCreacion = valorFecha;
-      } else if (typeof valorFecha === 'number') {
-        fechaCreacion = new Date(valorFecha).toISOString();
-      }
-
-      const convertirCoordenada = (valor) => {
-        if (typeof valor === 'number' && Number.isFinite(valor)) {
-          return valor;
-        }
-
-        if (typeof valor === 'string' && valor.trim() !== '') {
-          const numero = Number(valor);
-          return Number.isFinite(numero) ? numero : null;
-        }
-
-        return null;
-      };
 
       return {
         id: documento.id,
+        usuarioId: datos.usuarioId || '',
         nombreMascota: datos.nombreMascota || '',
         tipo: datos.tipo || '',
         especie: datos.especie || '',
@@ -80,7 +90,10 @@ module.exports = async function handler(req, res) {
         descripcion: datos.descripcion || '',
         urlImagen: datos.urlImagen || '',
         destacada: datos.destacada === true,
-        fechaCreacion,
+        estado: datos.estado || 'activa',
+        reencuentroConfirmado: datos.reencuentroConfirmado === true,
+        fechaReencuentro: convertirFecha(datos.fechaReencuentro),
+        fechaCreacion: convertirFecha(datos.fechaCreacion),
         latitud: convertirCoordenada(datos.latitud),
         longitud: convertirCoordenada(datos.longitud),
       };
