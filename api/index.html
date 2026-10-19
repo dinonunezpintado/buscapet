@@ -13,7 +13,7 @@
       margin: 0;
       padding: 24px 14px;
       font-family: Arial, sans-serif;
-      background: #F7F9F6;
+      background: #FFFFFF;
       color: #263238;
     }
 
@@ -21,16 +21,25 @@
       max-width: 680px;
       margin: 20px auto;
       padding: 26px;
-      background: white;
+      background: #FFFFFF;
+      border: 1px solid #E7ECE9;
       border-radius: 16px;
-      box-shadow: 0 4px 18px #00000012;
+      box-shadow: 0 6px 24px #183B3510;
     }
 
     .logo {
-      text-align: center;
-      color: #20A39E;
-      font-size: 29px;
-      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 8px;
+    }
+
+    .logo img {
+      display: block;
+      width: min(100%, 330px);
+      height: 125px;
+      object-fit: contain;
+      background: transparent;
     }
 
     h1 {
@@ -137,7 +146,7 @@
     .vista-previa {
       margin-top: 12px;
       padding: 16px;
-      background: #F7F9F6;
+      background: #FFFFFF;
       border: 1px solid #DDE6E1;
       border-radius: 14px;
     }
@@ -220,7 +229,9 @@
 
 <body>
   <main class="contenedor">
-    <div class="logo">🐾 BuscaPet</div>
+    <div class="logo">
+      <img src="/assets/images/logo.png" alt="BuscaPet: juntos los encontramos">
+    </div>
     <h1>Administración de notificaciones</h1>
 
     <p class="descripcion">
