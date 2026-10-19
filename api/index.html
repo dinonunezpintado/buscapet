@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>BuscaPet - Notificaciones</title>
+  <title>BuscaPet - Administración de notificaciones</title>
 
   <style>
     * {
@@ -13,16 +13,16 @@
 
     body {
       margin: 0;
-      padding: 30px 16px;
+      padding: 24px 14px;
       font-family: Arial, sans-serif;
       background: #F7F9F6;
       color: #263238;
     }
 
     .contenedor {
-      max-width: 520px;
-      margin: 30px auto;
-      padding: 28px;
+      max-width: 680px;
+      margin: 20px auto;
+      padding: 26px;
       background: white;
       border-radius: 16px;
       box-shadow: 0 4px 18px #00000012;
@@ -31,22 +31,21 @@
     .logo {
       text-align: center;
       color: #20A39E;
-      font-size: 30px;
+      font-size: 29px;
       font-weight: bold;
-      margin-bottom: 8px;
     }
 
     h1 {
       text-align: center;
-      font-size: 22px;
-      margin-bottom: 10px;
+      font-size: 23px;
+      margin-bottom: 8px;
     }
 
     .descripcion {
       text-align: center;
       color: #687579;
       line-height: 1.5;
-      margin-bottom: 28px;
+      margin-bottom: 26px;
     }
 
     label {
@@ -57,54 +56,122 @@
     }
 
     input,
-    textarea {
+    textarea,
+    select {
       width: 100%;
-      padding: 13px;
+      padding: 12px;
       border: 1px solid #D5DEDA;
-      border-radius: 10px;
+      border-radius: 9px;
       font-family: Arial, sans-serif;
       font-size: 15px;
+      background: white;
     }
 
     textarea {
-      min-height: 110px;
+      min-height: 100px;
       resize: vertical;
     }
 
     input:focus,
-    textarea:focus {
+    textarea:focus,
+    select:focus {
       outline: 2px solid #20A39E;
       border-color: #20A39E;
     }
 
     button {
-      width: 100%;
-      margin-top: 24px;
-      padding: 15px;
+      padding: 12px 16px;
       border: none;
-      border-radius: 10px;
+      border-radius: 9px;
       background: #20A39E;
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
       background: #188781;
     }
 
     button:disabled {
-      opacity: 0.6;
-      cursor: wait;
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .boton-secundario {
+      margin-top: 12px;
+      width: 100%;
+    }
+
+    .nota {
+      margin-top: 8px;
+      color: #687579;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .seccion {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #E5EBE7;
+    }
+
+    .vista-previa {
+      margin-top: 12px;
+      padding: 16px;
+      background: #F7F9F6;
+      border: 1px solid #DDE6E1;
+      border-radius: 14px;
+    }
+
+    .vista-cabecera {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .icono {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #20A39E;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .nombre-app {
+      font-weight: bold;
+    }
+
+    .hora {
+      font-size: 12px;
+      color: #687579;
+      margin-top: 3px;
+    }
+
+    .preview-titulo {
+      font-weight: bold;
+      margin-bottom: 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .preview-mensaje {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.5;
     }
 
     #resultado {
-      margin-top: 18px;
+      display: none;
+      margin-top: 16px;
       padding: 12px;
       border-radius: 8px;
       line-height: 1.5;
-      display: none;
       overflow-wrap: anywhere;
     }
 
@@ -119,102 +186,258 @@
       background: #FDEBE8;
       color: #A32D20;
     }
+
+    .aviso {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 9px;
+      background: #FFF3D9;
+      color: #704E0C;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 480px) {
+      .contenedor {
+        padding: 19px;
+      }
+    }
   </style>
 </head>
 
 <body>
   <main class="contenedor">
     <div class="logo">🐾 BuscaPet</div>
-
-    <h1>Enviar notificación</h1>
+    <h1>Administración de notificaciones</h1>
 
     <p class="descripcion">
-      Enviá una notificación al dispositivo de un usuario de BuscaPet.
+      Buscá un usuario, redactá el mensaje y revisá cómo se verá la notificación.
     </p>
 
-    <form id="formulario">
-      <label for="usuarioId">ID del usuario</label>
+    <section>
+      <label for="clave">Clave administrativa</label>
       <input
-        type="text"
-        id="usuarioId"
-        placeholder="Ingresá el ID del usuario"
+        type="password"
+        id="clave"
+        autocomplete="off"
+        placeholder="Ingresá la clave privada de Vercel"
         required
       >
+      <p class="nota">
+        La clave se utiliza para autorizar las consultas al servidor.
+        No se guarda en el navegador.
+      </p>
+    </section>
 
-      <label for="titulo">Título</label>
+    <section class="seccion">
+      <label for="busqueda">Buscar destinatario</label>
+      <input
+        type="search"
+        id="busqueda"
+        placeholder="Nombre, apellido o correo electrónico"
+        autocomplete="off"
+      >
+
+      <button type="button" id="botonBuscar" class="boton-secundario">
+        Buscar usuarios
+      </button>
+
+      <label for="destinatario">Seleccionar usuario</label>
+      <select id="destinatario" disabled>
+        <option value="">Primero realizá una búsqueda</option>
+      </select>
+
+      <p class="nota">
+        Por privacidad, solo se muestran el nombre, apellido y correo.
+      </p>
+    </section>
+
+    <section class="seccion">
+      <label for="titulo">Título de la notificación</label>
       <input
         type="text"
         id="titulo"
         value="BuscaPet"
         maxlength="100"
-        required
+        placeholder="Escribí el título"
       >
 
       <label for="mensaje">Mensaje</label>
       <textarea
         id="mensaje"
-        placeholder="Escribí el mensaje de la notificación"
         maxlength="500"
-        required
+        placeholder="Escribí el mensaje que recibirá el usuario"
       ></textarea>
+    </section>
 
-      <button type="submit" id="botonEnviar">
-        Enviar notificación
-      </button>
-    </form>
+    <section class="seccion">
+      <h2 style="font-size: 18px;">Vista previa</h2>
+
+      <div class="vista-previa">
+        <div class="vista-cabecera">
+          <div class="icono">🐾</div>
+          <div>
+            <div class="nombre-app">BuscaPet</div>
+            <div class="hora">Vista previa de notificación</div>
+          </div>
+        </div>
+
+        <div class="preview-titulo" id="previewTitulo">BuscaPet</div>
+        <div class="preview-mensaje" id="previewMensaje">
+          Tu mensaje aparecerá aquí.
+        </div>
+      </div>
+
+      <p class="nota">
+        Esta vista es una representación aproximada. La apariencia final
+        puede variar según el teléfono.
+      </p>
+    </section>
+
+    <div class="aviso">
+      Modo de prueba: el envío está deshabilitado. Esta página permite
+      probar la clave, buscar destinatarios y revisar la vista previa,
+      pero no enviará notificaciones.
+    </div>
+
+    <button type="button" id="botonEnviar" class="boton-secundario" disabled>
+      Envío deshabilitado durante las pruebas
+    </button>
 
     <div id="resultado" role="status" aria-live="polite"></div>
   </main>
 
   <script>
-    const formulario = document.getElementById('formulario');
-    const botonEnviar = document.getElementById('botonEnviar');
+    const clave = document.getElementById('clave');
+    const busqueda = document.getElementById('busqueda');
+    const botonBuscar = document.getElementById('botonBuscar');
+    const destinatario = document.getElementById('destinatario');
+    const titulo = document.getElementById('titulo');
+    const mensaje = document.getElementById('mensaje');
+    const previewTitulo = document.getElementById('previewTitulo');
+    const previewMensaje = document.getElementById('previewMensaje');
     const resultado = document.getElementById('resultado');
 
-    formulario.addEventListener('submit', async function (evento) {
-      evento.preventDefault();
+    function mostrarResultado(texto, tipo) {
+      resultado.textContent = texto;
+      resultado.className = tipo;
+    }
 
-      const usuarioId = document.getElementById('usuarioId').value.trim();
-      const titulo = document.getElementById('titulo').value.trim();
-      const mensaje = document.getElementById('mensaje').value.trim();
-
+    function limpiarResultado() {
+      resultado.textContent = '';
       resultado.className = '';
       resultado.style.display = 'none';
+    }
 
-      botonEnviar.disabled = true;
-      botonEnviar.textContent = 'Enviando...';
+    function actualizarVistaPrevia() {
+      previewTitulo.textContent = titulo.value.trim() || 'BuscaPet';
+      previewMensaje.textContent =
+        mensaje.value.trim() || 'Tu mensaje aparecerá aquí.';
+    }
+
+    titulo.addEventListener('input', actualizarVistaPrevia);
+    mensaje.addEventListener('input', actualizarVistaPrevia);
+
+    clave.addEventListener('input', () => {
+      limpiarResultado();
+      destinatario.innerHTML =
+        '<option value="">Volvé a buscar con la clave ingresada</option>';
+      destinatario.disabled = true;
+    });
+
+    async function buscarUsuarios() {
+      limpiarResultado();
+
+      const claveIngresada = clave.value.trim();
+      const termino = busqueda.value.trim();
+
+      if (!claveIngresada) {
+        mostrarResultado('Ingresá la clave administrativa.', 'error');
+        return;
+      }
+
+      if (termino.length < 2) {
+        mostrarResultado(
+          'Ingresá al menos dos caracteres para buscar.',
+          'error'
+        );
+        return;
+      }
+
+      botonBuscar.disabled = true;
+      botonBuscar.textContent = 'Buscando...';
+      destinatario.disabled = true;
+      destinatario.innerHTML = '<option value="">Buscando...</option>';
 
       try {
-        const respuesta = await fetch('/api/notificar', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            usuarioId: usuarioId,
-            titulo: titulo,
-            mensaje: mensaje
-          })
-        });
+        const respuesta = await fetch(
+          '/api/usuarios?q=' + encodeURIComponent(termino),
+          {
+            method: 'GET',
+            headers: {
+              'x-admin-key': claveIngresada
+            },
+            cache: 'no-store'
+          }
+        );
 
         const datos = await respuesta.json();
 
         if (!respuesta.ok) {
-          throw new Error(datos.error || 'No se pudo enviar la notificación.');
+          throw new Error(datos.error || 'No se pudo buscar usuarios.');
         }
 
-        resultado.textContent =
-          datos.mensaje || 'Notificación enviada correctamente.';
-        resultado.className = 'exito';
+        destinatario.innerHTML = '';
+
+        if (!datos.usuarios || datos.usuarios.length === 0) {
+          destinatario.innerHTML =
+            '<option value="">No se encontraron usuarios</option>';
+          mostrarResultado('No se encontraron coincidencias.', 'error');
+          return;
+        }
+
+        destinatario.add(new Option('Seleccioná un usuario', ''));
+
+        datos.usuarios.forEach((usuario) => {
+          const nombreCompleto =
+            [usuario.nombre, usuario.apellido].filter(Boolean).join(' ') ||
+            'Usuario sin nombre';
+
+          const etiqueta = usuario.email
+            ? nombreCompleto + ' — ' + usuario.email
+            : nombreCompleto;
+
+          destinatario.add(new Option(etiqueta, usuario.uid));
+        });
+
+        destinatario.disabled = false;
+        mostrarResultado(
+          'Se encontraron ' + datos.usuarios.length + ' usuario(s).',
+          'exito'
+        );
       } catch (error) {
-        resultado.textContent =
-          error.message || 'Ocurrió un error al enviar la notificación.';
-        resultado.className = 'error';
+        destinatario.innerHTML =
+          '<option value="">No se pudo completar la búsqueda</option>';
+        mostrarResultado(
+          error.message || 'Ocurrió un error durante la búsqueda.',
+          'error'
+        );
       } finally {
-        botonEnviar.disabled = false;
-        botonEnviar.textContent = 'Enviar notificación';
+        botonBuscar.disabled = false;
+        botonBuscar.textContent = 'Buscar usuarios';
+      }
+    }
+
+    botonBuscar.addEventListener('click', buscarUsuarios);
+
+    busqueda.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Enter') {
+        evento.preventDefault();
+        buscarUsuarios();
       }
     });
+
+    actualizarVistaPrevia();
   </script>
 </body>
 </html>
