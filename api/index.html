@@ -7,9 +7,7 @@
   <title>BuscaPet - Administración de notificaciones</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -55,9 +53,7 @@
       font-size: 14px;
     }
 
-    input,
-    textarea,
-    select {
+    input, textarea, select {
       width: 100%;
       padding: 12px;
       border: 1px solid #D5DEDA;
@@ -72,9 +68,7 @@
       resize: vertical;
     }
 
-    input:focus,
-    textarea:focus,
-    select:focus {
+    input:focus, textarea:focus, select:focus {
       outline: 2px solid #20A39E;
       border-color: #20A39E;
     }
@@ -90,19 +84,20 @@
       cursor: pointer;
     }
 
-    button:hover:not(:disabled) {
-      background: #188781;
-    }
+    button:hover:not(:disabled) { background: #188781; }
 
     button:disabled {
       opacity: 0.55;
       cursor: not-allowed;
     }
 
-    .boton-secundario {
-      margin-top: 12px;
+    .boton-completo {
       width: 100%;
+      margin-top: 12px;
     }
+
+    .boton-todos { background: #FF7A59; }
+    .boton-todos:hover:not(:disabled) { background: #e76545; }
 
     .nota {
       margin-top: 8px;
@@ -115,6 +110,28 @@
       margin-top: 25px;
       padding-top: 20px;
       border-top: 1px solid #E5EBE7;
+    }
+
+    .opcion {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px;
+      border: 1px solid #D5DEDA;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .opcion input {
+      width: auto;
+      margin-top: 3px;
+    }
+
+    .opcion label {
+      margin: 0;
+      cursor: pointer;
+      line-height: 1.4;
     }
 
     .vista-previa {
@@ -144,9 +161,7 @@
       font-size: 22px;
     }
 
-    .nombre-app {
-      font-weight: bold;
-    }
+    .nombre-app { font-weight: bold; }
 
     .hora {
       font-size: 12px;
@@ -198,9 +213,7 @@
     }
 
     @media (max-width: 480px) {
-      .contenedor {
-        padding: 19px;
-      }
+      .contenedor { padding: 19px; }
     }
   </style>
 </head>
@@ -211,7 +224,7 @@
     <h1>Administración de notificaciones</h1>
 
     <p class="descripcion">
-      Buscá un usuario, redactá el mensaje y revisá cómo se verá la notificación.
+      Seleccioná los destinatarios, redactá el mensaje y revisá la vista previa.
     </p>
 
     <section>
@@ -224,31 +237,52 @@
         required
       >
       <p class="nota">
-        La clave se utiliza para autorizar las consultas al servidor.
+        La clave autoriza las consultas y los envíos al servidor.
         No se guarda en el navegador.
       </p>
     </section>
 
     <section class="seccion">
-      <label for="busqueda">Buscar destinatario</label>
-      <input
-        type="search"
-        id="busqueda"
-        placeholder="Nombre, apellido o correo electrónico"
-        autocomplete="off"
-      >
+      <h2 style="font-size: 18px;">Destinatarios</h2>
 
-      <button type="button" id="botonBuscar" class="boton-secundario">
-        Buscar usuarios
-      </button>
+      <div class="opcion">
+        <input type="radio" name="modo" id="modoIndividual"
+          value="individual" checked>
+        <label for="modoIndividual">
+          <strong>Usuario individual</strong><br>
+          Enviar a una persona seleccionada.
+        </label>
+      </div>
 
-      <label for="destinatario">Seleccionar usuario</label>
-      <select id="destinatario" disabled>
-        <option value="">Primero realizá una búsqueda</option>
-      </select>
+      <div class="opcion">
+        <input type="radio" name="modo" id="modoTodos" value="todos">
+        <label for="modoTodos">
+          <strong>Todos los usuarios</strong><br>
+          Enviar a todos los dispositivos con token de notificación registrado.
+        </label>
+      </div>
+
+      <div id="seccionBusqueda">
+        <label for="busqueda">Buscar destinatario</label>
+        <input
+          type="search"
+          id="busqueda"
+          placeholder="Nombre, apellido o correo electrónico"
+          autocomplete="off"
+        >
+
+        <button type="button" id="botonBuscar" class="boton-completo">
+          Buscar usuarios
+        </button>
+
+        <label for="destinatario">Seleccionar usuario</label>
+        <select id="destinatario" disabled>
+          <option value="">Primero realizá una búsqueda</option>
+        </select>
+      </div>
 
       <p class="nota">
-        Por privacidad, solo se muestran el nombre, apellido y correo.
+        La búsqueda solo muestra el nombre, apellido y correo electrónico.
       </p>
     </section>
 
@@ -260,13 +294,15 @@
         value="BuscaPet"
         maxlength="100"
         placeholder="Escribí el título"
+        required
       >
 
       <label for="mensaje">Mensaje</label>
       <textarea
         id="mensaje"
         maxlength="500"
-        placeholder="Escribí el mensaje que recibirá el usuario"
+        placeholder="Escribí el mensaje"
+        required
       ></textarea>
     </section>
 
@@ -289,19 +325,21 @@
       </div>
 
       <p class="nota">
-        Esta vista es una representación aproximada. La apariencia final
-        puede variar según el teléfono.
+        La apariencia final puede variar según el teléfono.
       </p>
     </section>
 
-    <div class="aviso">
-      Modo de prueba: el envío está deshabilitado. Esta página permite
-      probar la clave, buscar destinatarios y revisar la vista previa,
-      pero no enviará notificaciones.
+    <div class="aviso" id="avisoModo">
+      El envío individual se realizará inmediatamente al pulsar el botón.
     </div>
 
-    <button type="button" id="botonEnviar" class="boton-secundario" disabled>
-      Envío deshabilitado durante las pruebas
+    <button type="button" id="botonEnviarIndividual" class="boton-completo">
+      Enviar notificación al usuario
+    </button>
+
+    <button type="button" id="botonEnviarTodos"
+      class="boton-completo boton-todos" hidden>
+      Notificar a todos los usuarios
     </button>
 
     <div id="resultado" role="status" aria-live="polite"></div>
@@ -317,6 +355,12 @@
     const previewTitulo = document.getElementById('previewTitulo');
     const previewMensaje = document.getElementById('previewMensaje');
     const resultado = document.getElementById('resultado');
+    const modoIndividual = document.getElementById('modoIndividual');
+    const modoTodos = document.getElementById('modoTodos');
+    const seccionBusqueda = document.getElementById('seccionBusqueda');
+    const botonEnviarIndividual = document.getElementById('botonEnviarIndividual');
+    const botonEnviarTodos = document.getElementById('botonEnviarTodos');
+    const avisoModo = document.getElementById('avisoModo');
 
     function mostrarResultado(texto, tipo) {
       resultado.textContent = texto;
@@ -335,8 +379,23 @@
         mensaje.value.trim() || 'Tu mensaje aparecerá aquí.';
     }
 
+    function actualizarModo() {
+      const todos = modoTodos.checked;
+
+      seccionBusqueda.hidden = todos;
+      botonEnviarIndividual.hidden = todos;
+      botonEnviarTodos.hidden = !todos;
+
+      avisoModo.textContent = todos
+        ? 'Atención: el mensaje se enviará inmediatamente a todos los dispositivos con token registrado. Se pedirá confirmación antes de continuar.'
+        : 'El envío individual se realizará inmediatamente al pulsar el botón.';
+      limpiarResultado();
+    }
+
     titulo.addEventListener('input', actualizarVistaPrevia);
     mensaje.addEventListener('input', actualizarVistaPrevia);
+    modoIndividual.addEventListener('change', actualizarModo);
+    modoTodos.addEventListener('change', actualizarModo);
 
     clave.addEventListener('input', () => {
       limpiarResultado();
@@ -374,9 +433,7 @@
           '/api/usuarios?q=' + encodeURIComponent(termino),
           {
             method: 'GET',
-            headers: {
-              'x-admin-key': claveIngresada
-            },
+            headers: { 'x-admin-key': claveIngresada },
             cache: 'no-store'
           }
         );
@@ -437,7 +494,101 @@
       }
     });
 
+    async function enviarNotificacion(modo) {
+      limpiarResultado();
+
+      const claveIngresada = clave.value.trim();
+      const tituloIngresado = titulo.value.trim();
+      const mensajeIngresado = mensaje.value.trim();
+      const usuarioId = destinatario.value;
+
+      if (!claveIngresada) {
+        mostrarResultado('Ingresá la clave administrativa.', 'error');
+        return;
+      }
+
+      if (!tituloIngresado || !mensajeIngresado) {
+        mostrarResultado('Completá el título y el mensaje.', 'error');
+        return;
+      }
+
+      if (modo === 'individual' && !usuarioId) {
+        mostrarResultado('Seleccioná un destinatario.', 'error');
+        return;
+      }
+
+      if (modo === 'todos') {
+        const confirmado = window.confirm(
+          '¿Confirmás el envío INMEDIATO a todos los usuarios con token de notificación registrado? Esta acción no se puede deshacer.'
+        );
+
+        if (!confirmado) return;
+      }
+
+      const boton = modo === 'todos'
+        ? botonEnviarTodos
+        : botonEnviarIndividual;
+
+      boton.disabled = true;
+      const textoOriginal = boton.textContent;
+      boton.textContent = 'Enviando...';
+
+      try {
+        const respuesta = await fetch('/api/notificar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-key': claveIngresada
+          },
+          body: JSON.stringify({
+            modo,
+            usuarioId: modo === 'individual' ? usuarioId : undefined,
+            titulo: tituloIngresado,
+            mensaje: mensajeIngresado
+          })
+        });
+
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+          throw new Error(datos.error || 'No se pudo enviar la notificación.');
+        }
+
+        if (modo === 'todos') {
+          mostrarResultado(
+            datos.mensaje +
+            ' Dispositivos con token: ' + (datos.totalConToken ?? 0) +
+            '. Envíos correctos: ' + (datos.enviados ?? 0) +
+            '. Errores: ' + (datos.errores ?? 0) + '.',
+            'exito'
+          );
+        } else {
+          mostrarResultado(
+            datos.mensaje || 'Notificación enviada correctamente.',
+            'exito'
+          );
+        }
+      } catch (error) {
+        mostrarResultado(
+          error.message || 'Ocurrió un error al enviar la notificación.',
+          'error'
+        );
+      } finally {
+        boton.disabled = false;
+        boton.textContent = textoOriginal;
+      }
+    }
+
+    botonEnviarIndividual.addEventListener('click', () => {
+      enviarNotificacion('individual');
+    });
+
+    botonEnviarTodos.addEventListener('click', () => {
+      enviarNotificacion('todos');
+    });
+
     actualizarVistaPrevia();
+    actualizarModo();
   </script>
 </body>
 </html>
