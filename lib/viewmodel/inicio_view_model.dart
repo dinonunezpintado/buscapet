@@ -1,36 +1,38 @@
+
 import 'package:flutter/foundation.dart';
 
-class InicioViewModel extends ChangeNotifier {
-  // aquí se cargaran los datos de las publicaciones de la BD
+import '../models/publicacion.dart';
+import '../services/publicacion_service.dart';
 
-  final List<Map<String, String>> publicaciones = [
-    {
-      'nombre': 'Milo',
-      'estado': 'Perdida',
-      'ubicacion': 'Palermo, CABA',
-      'tiempo': '2 horas atrás',
-      'imagen': 'assets/images/milo.jpg',
-    },
-    {
-      'nombre': 'Lola',
-      'estado': 'Encontrada',
-      'ubicacion': 'Villa Urquiza, CABA',
-      'tiempo': '5 horas atrás',
-      'imagen': 'assets/images/lola.jpg',
-    },
-    {
-      'nombre': 'Simba',
-      'estado': 'Perdida',
-      'ubicacion': 'Belgrano, CABA',
-      'tiempo': '1 día atrás',
-      'imagen': 'assets/images/simba.jpg',
-    },
-    {
-      'nombre': 'Tomy',
-      'estado': 'Encontrada',
-      'ubicacion': 'Caballito, CABA',
-      'tiempo': '1 día atrás',
-      'imagen': 'assets/images/tomy.jpg',
-    },
-  ];
+class InicioViewModel extends ChangeNotifier {
+  final PublicacionService _servicio = PublicacionService();
+
+  List<Publicacion> publicaciones = [];
+
+  bool cargando = false;
+
+  String? mensajeError;
+
+  InicioViewModel() {
+    cargarPublicaciones();
+  }
+
+  Future<void> cargarPublicaciones() async {
+    cargando = true;
+    mensajeError = null;
+    notifyListeners();
+
+    try {
+      publicaciones = await _servicio.obtenerPublicaciones();
+    } catch (error, stackTrace) {
+      debugPrint('error al cargar publicaciones: $error');
+      debugPrintStack(stackTrace: stackTrace);
+
+      mensajeError =
+          'No se pudieron cargar las publicaciones.\n\nDetalle: $error';
+    } finally {
+      cargando = false;
+      notifyListeners();
+    }
+  }
 }
