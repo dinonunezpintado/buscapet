@@ -8,6 +8,7 @@ import 'detalle_publicacion_page.dart';
 import 'publicar_mascota_page.dart';
 import 'publicaciones_page.dart';
 import 'perfil_page.dart';
+import 'wearable/reloj_page.dart';
 
 class InicioPage extends StatefulWidget {
   const InicioPage({super.key});
@@ -38,6 +39,15 @@ class _InicioPageState extends State<InicioPage> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void _abrirReloj() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const RelojPage(),
+      ),
+    );
   }
 
   void _abrirMapa() {
@@ -685,9 +695,9 @@ class _InicioPageState extends State<InicioPage> {
             onTap: _abrirPublicaciones,
           ),
 
-          // botón central
+          // acceso a la pantalla del reloj
           GestureDetector(
-            onTap: () => _abrirFormularioPublicacion(),
+            onTap: _abrirReloj,
             child: Container(
               width: 56,
               height: 56,
@@ -706,9 +716,9 @@ class _InicioPageState extends State<InicioPage> {
                 ],
               ),
               child: const Icon(
-                Icons.add,
+                Icons.watch,
                 color: Colors.white,
-                size: 32,
+                size: 30,
               ),
             ),
           ),

@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../models/publicacion.dart';
 import '../services/publicacion_service.dart';
 import '../viewmodel/mapa_view_model.dart';
+import 'wearable/reloj_page.dart';
 
 class MapaPage extends StatefulWidget {
   final bool modoSeleccion;
@@ -51,6 +52,19 @@ class _MapaPageState extends State<MapaPage> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void _abrirRelojConRuta() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RelojPage(
+          rutaActiva: _viewModel.rutaCalculada,
+          distancia: _viewModel.distancia,
+          tiempoEstimado: _viewModel.tiempoEstimado,
+        ),
+      ),
+    );
   }
 
   Future<void> _cargarPublicaciones() async {
@@ -252,6 +266,8 @@ class _MapaPageState extends State<MapaPage> {
           ),
         );
       }
+
+      _abrirRelojConRuta();
     } else if (_viewModel.mensajeError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(_viewModel.mensajeError!)),
@@ -543,7 +559,19 @@ class _MapaPageState extends State<MapaPage> {
                     ),
                   ),
                   const Spacer(),
-                  const SizedBox(width: 42),
+                  IconButton(
+                    tooltip: 'Ver ruta en el reloj',
+                    onPressed: _viewModel.rutaCalculada
+                        ? _abrirRelojConRuta
+                        : null,
+                    icon: Icon(
+                      Icons.watch,
+                      color: _viewModel.rutaCalculada
+                          ? Colors.white
+                          : Colors.white54,
+                      size: 27,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -883,6 +911,10 @@ class _MapaPageState extends State<MapaPage> {
                                 ? null
                                 : () async {
                                     await _viewModel.calcularRuta();
+                                    if (!mounted) return;
+                                    if (_viewModel.rutaCalculada) {
+                                      _abrirRelojConRuta();
+                                    }
                                   },
                             icon: const Icon(Icons.alt_route),
                             label: Text(
