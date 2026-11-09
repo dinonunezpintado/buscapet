@@ -1,5 +1,6 @@
 class Publicacion {
   final String id;
+  final String usuarioId;
   final String nombreMascota;
   final String tipo;
   final String especie;
@@ -11,6 +12,11 @@ class Publicacion {
   final String descripcion;
   final String urlImagen;
   final bool destacada;
+  final bool esPremium;
+  final String estadoPlan;
+  final String estadoPago;
+  final DateTime? fechaInicioPremium;
+  final DateTime? fechaFinPremium;
   final DateTime? fechaCreacion;
   final double? latitud;
   final double? longitud;
@@ -20,6 +26,7 @@ class Publicacion {
 
   Publicacion({
     required this.id,
+    this.usuarioId = '',
     required this.nombreMascota,
     required this.tipo,
     required this.especie,
@@ -31,6 +38,11 @@ class Publicacion {
     required this.descripcion,
     this.urlImagen = '',
     required this.destacada,
+    this.esPremium = false,
+    this.estadoPlan = 'free',
+    this.estadoPago = 'no_aplica',
+    this.fechaInicioPremium,
+    this.fechaFinPremium,
     this.fechaCreacion,
     this.latitud,
     this.longitud,
@@ -40,14 +52,6 @@ class Publicacion {
   });
 
   factory Publicacion.fromJson(Map<String, dynamic> json) {
-    DateTime? fecha;
-    final valorFecha = json['fechaCreacion'];
-    if (valorFecha is String && valorFecha.isNotEmpty) {
-      fecha = DateTime.tryParse(valorFecha);
-    } else if (valorFecha is int) {
-      fecha = DateTime.fromMillisecondsSinceEpoch(valorFecha);
-    }
-
     DateTime? convertirFecha(dynamic valor) {
       if (valor is String && valor.isNotEmpty) return DateTime.tryParse(valor);
       if (valor is int) return DateTime.fromMillisecondsSinceEpoch(valor);
@@ -62,6 +66,7 @@ class Publicacion {
 
     return Publicacion(
       id: json['id']?.toString() ?? '',
+      usuarioId: json['usuarioId']?.toString() ?? '',
       nombreMascota: json['nombreMascota']?.toString() ?? json['nombre']?.toString() ?? '',
       tipo: json['tipo']?.toString() ?? '',
       especie: json['especie']?.toString() ?? '',
@@ -73,7 +78,12 @@ class Publicacion {
       descripcion: json['descripcion']?.toString() ?? '',
       urlImagen: json['urlImagen']?.toString() ?? '',
       destacada: json['destacada'] == true,
-      fechaCreacion: fecha,
+      esPremium: json['esPremium'] == true,
+      estadoPlan: json['estadoPlan']?.toString() ?? 'free',
+      estadoPago: json['estadoPago']?.toString() ?? 'no_aplica',
+      fechaInicioPremium: convertirFecha(json['fechaInicioPremium']),
+      fechaFinPremium: convertirFecha(json['fechaFinPremium']),
+      fechaCreacion: convertirFecha(json['fechaCreacion']),
       latitud: convertirCoordenada(json['latitud']),
       longitud: convertirCoordenada(json['longitud']),
       estado: json['estado']?.toString() ?? 'activa',

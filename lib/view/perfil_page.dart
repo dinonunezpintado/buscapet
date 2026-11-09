@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'avisos_page.dart';
+import 'conversaciones_page.dart';
+
 class PerfilPage extends StatefulWidget {
   const PerfilPage({super.key});
 
@@ -184,6 +187,141 @@ class _PerfilPageState extends State<PerfilPage> {
                   ],
                 ),
               ),
+
+              // Acceso a los avisos que otros usuarios enviaron al dueño.
+              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: _firestore
+                    .collection('avisos')
+                    .where('idDueno', isEqualTo: usuario.uid)
+                    .snapshots(),
+                builder: (context, avisosSnapshot) {
+                  final avisos = avisosSnapshot.data?.docs ?? [];
+                  final cantidadNuevos = avisos
+                      .where((aviso) => aviso.data()['estado'] == 'nuevo')
+                      .length;
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 22),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: _verde.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      leading: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: _verde.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Icon(
+                          Icons.mark_chat_unread_outlined,
+                          color: _verde,
+                          size: 27,
+                        ),
+                      ),
+                      title: const Text(
+                        'Mis avisos',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Text(
+                        avisosSnapshot.hasError
+                            ? 'No se pudieron cargar los avisos'
+                            : !avisosSnapshot.hasData
+                                ? 'Cargando avisos...'
+                                : avisos.isEmpty
+                                    ? 'Todavía no recibiste avisos'
+                                    : '${avisos.length} aviso(s) recibido(s)',
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (cantidadNuevos > 0)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 9,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: _naranja,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '$cantidadNuevos',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          const SizedBox(width: 6),
+                          const Icon(Icons.chevron_right, color: _verde),
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AvisosPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+
+              // Acceso al historial de chats privados.
+              Container(
+                margin: const EdgeInsets.only(bottom: 22),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: _verde.withValues(alpha: 0.25)),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  leading: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: _verde.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(
+                      Icons.forum_outlined,
+                      color: _verde,
+                      size: 27,
+                    ),
+                  ),
+                  title: const Text(
+                    'Mis conversaciones',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  subtitle: const Text('Chats privados sobre tus publicaciones'),
+                  trailing: const Icon(Icons.chevron_right, color: _verde),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ConversacionesPage(),
+                    ),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 22),
               const Row(
                 children: [

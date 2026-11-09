@@ -104,7 +104,19 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
             ));
           }
           final todas = snapshot.data ?? [];
-          final lista = todas.where(_coincide).toList();
+          final lista = todas.where(_coincide).toList()
+            ..sort((a, b) {
+              // Las destacadas vigentes siempre aparecen antes que las Free.
+              if (a.destacada != b.destacada) {
+                return a.destacada ? -1 : 1;
+              }
+              final fechaA = a.fechaCreacion;
+              final fechaB = b.fechaCreacion;
+              if (fechaA == null && fechaB == null) return 0;
+              if (fechaA == null) return 1;
+              if (fechaB == null) return -1;
+              return fechaB.compareTo(fechaA);
+            });
           return Column(children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
@@ -149,8 +161,22 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                         final color = _colorEstado(categoria);
                         final esPerdida = categoria == 'Mascota perdida';
                         return Card(
-                          color: Colors.white, margin: const EdgeInsets.only(bottom: 12), clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: color.withValues(alpha: 0.35))),
+                          color: p.destacada ? const Color(0xFFFFF7F3) : Colors.white,
+                          margin: const EdgeInsets.only(bottom: 12),
+                          clipBehavior: Clip.antiAlias,
+                          elevation: p.destacada ? 4 : 1,
+                          shadowColor: p.destacada
+                              ? const Color(0xFFFF7A59).withValues(alpha: 0.30)
+                              : Colors.black12,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: BorderSide(
+                              color: p.destacada
+                                  ? const Color(0xFFFF7A59)
+                                  : color.withValues(alpha: 0.35),
+                              width: p.destacada ? 2.2 : 1,
+                            ),
+                          ),
                           child: InkWell(
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetallePublicacionPage(publicacion: p))),
                             child: Padding(padding: const EdgeInsets.all(10), child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -162,14 +188,44 @@ class _PublicacionesPageState extends State<PublicacionesPage> {
                               )),
                               const SizedBox(width: 12),
                               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                Text(p.nombreMascota.isEmpty ? 'Mascota sin nombre' : p.nombreMascota, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Color(0xFF444444))),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        p.nombreMascota.isEmpty ? 'Mascota sin nombre' : p.nombreMascota,
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Color(0xFF444444)),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    if (p.destacada) ...[
+                                      const SizedBox(width: 5),
+                                      const Icon(Icons.workspace_premium, color: Color(0xFFFF7A59), size: 21),
+                                    ],
+                                  ],
+                                ),
+                                if (p.destacada)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 3, bottom: 5),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFF7A59),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: const Text(
+                                        '★ PUBLICACIÓN PREMIUM',
+                                        style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 0.3),
+                                      ),
+                                    ),
+                                  ),
                                 const SizedBox(height: 6),
                                 Container(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5), decoration: BoxDecoration(color: (esPerdida ? const Color(0xFFFF7A59) : const Color(0xFF20A39E)).withValues(alpha: 0.13), borderRadius: BorderRadius.circular(20)), child: Text(categoria, style: TextStyle(color: esPerdida ? const Color(0xFFCE5A40) : (categoria == 'Mascota reencontrada' ? const Color(0xFF25834A) : const Color(0xFF16827D)), fontWeight: FontWeight.bold, fontSize: 12))),
                                 const SizedBox(height: 7),
                                 if (p.reencuentroConfirmado) Container(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4), decoration: BoxDecoration(color: color.withValues(alpha: 0.13), borderRadius: BorderRadius.circular(20)), child: Text('Reencuentro confirmado', style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12))),
                                 const SizedBox(height: 8),
                                 Row(crossAxisAlignment: CrossAxisAlignment.start, children: [const Icon(Icons.location_on_outlined, size: 16, color: Color(0xFF20A39E)), const SizedBox(width: 3), Expanded(child: Text(p.ubicacion.isEmpty ? 'Ubicación no indicada' : p.ubicacion, style: const TextStyle(color: Color(0xFF666666), fontSize: 13))) ]),
-                                if (p.destacada) const Padding(padding: EdgeInsets.only(top: 6), child: Row(children: [Icon(Icons.star, color: Color(0xFFFF7A59), size: 16), SizedBox(width: 4), Text('Destacada', style: TextStyle(color: Color(0xFFFF7A59), fontWeight: FontWeight.bold, fontSize: 12))])),
+                                if (p.destacada) const Padding(padding: EdgeInsets.only(top: 6), child: Row(children: [Icon(Icons.star, color: Color(0xFFFF7A59), size: 16), SizedBox(width: 4), Text('Premium · mayor visibilidad', style: TextStyle(color: Color(0xFFFF7A59), fontWeight: FontWeight.bold, fontSize: 12))])),
                               ])),
                               const Icon(Icons.chevron_right, color: Color(0xFF20A39E)),
                             ])),

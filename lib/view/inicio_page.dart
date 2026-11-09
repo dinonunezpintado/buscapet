@@ -371,7 +371,19 @@ class _InicioPageState extends State<InicioPage> {
 
     final activas = _viewModel.publicaciones
         .where((p) => !p.reencuentroConfirmado)
-        .toList();
+        .toList()
+      ..sort((a, b) {
+        // Primero las destacadas; dentro de cada grupo, las más recientes.
+        if (a.destacada != b.destacada) {
+          return a.destacada ? -1 : 1;
+        }
+        final fechaA = a.fechaCreacion;
+        final fechaB = b.fechaCreacion;
+        if (fechaA == null && fechaB == null) return 0;
+        if (fechaA == null) return 1;
+        if (fechaB == null) return -1;
+        return fechaB.compareTo(fechaA);
+      });
 
     if (activas.isEmpty) {
       return const Center(
@@ -479,13 +491,20 @@ class _InicioPageState extends State<InicioPage> {
         width: 165,
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: publicacion.destacada
+              ? const Color(0xFFFFF7F3)
+              : Colors.white,
           borderRadius: BorderRadius.circular(14),
+          border: publicacion.destacada
+              ? Border.all(color: const Color(0xFFFF7A59), width: 2.2)
+              : null,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.10),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
+              color: publicacion.destacada
+                  ? const Color(0xFFFF7A59).withValues(alpha: 0.25)
+                  : Colors.black.withValues(alpha: 0.10),
+              blurRadius: publicacion.destacada ? 10 : 6,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -498,7 +517,49 @@ class _InicioPageState extends State<InicioPage> {
               SizedBox(
                 height: 125,
                 width: double.infinity,
-                child: _construirImagenMascota(publicacion),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _construirImagenMascota(publicacion),
+                    if (publicacion.destacada)
+                      Positioned(
+                        top: 7,
+                        left: 7,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFF7A59),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.18),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.star, color: Colors.white, size: 13),
+                              SizedBox(width: 3),
+                              Text(
+                                'PREMIUM',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
               Expanded(
                 child: Padding(
@@ -587,7 +648,7 @@ class _InicioPageState extends State<InicioPage> {
                             SizedBox(width: 3),
                             Expanded(
                               child: Text(
-                                'Destacada',
+                                'PUBLICACIÓN PREMIUM',
                                 style: TextStyle(
                                   color: Color(0xFFFF7A59),
                                   fontSize: 11,

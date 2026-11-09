@@ -686,13 +686,22 @@ class _MapaPageState extends State<MapaPage> {
                                             publicacion,
                                           );
 
+                                      final esPremium = publicacion.destacada;
+                                      final colorTipo = esPerdida
+                                          ? const Color(0xFFFF7A59)
+                                          : const Color(0xFF20A39E);
+
                                       return Marker(
                                         point: LatLng(
                                           publicacion.latitud!,
                                           publicacion.longitud!,
                                         ),
-                                        width: seleccionada ? 68 : 58,
-                                        height: seleccionada ? 76 : 66,
+                                        width: esPremium
+                                            ? (seleccionada ? 76 : 70)
+                                            : (seleccionada ? 68 : 58),
+                                        height: esPremium
+                                            ? (seleccionada ? 84 : 78)
+                                            : (seleccionada ? 76 : 66),
                                         child: GestureDetector(
                                           onTap: () async {
                                             if (_viewModel.latitudUsuario == null ||
@@ -707,41 +716,91 @@ class _MapaPageState extends State<MapaPage> {
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Container(
-                                                width: seleccionada ? 54 : 46,
-                                                height: seleccionada ? 54 : 46,
-                                                padding: const EdgeInsets.all(3),
-                                                decoration: BoxDecoration(
-                                                  color: esPerdida
-                                                      ? const Color(0xFFFF7A59)
-                                                      : const Color(0xFF20A39E),
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: Colors.white,
-                                                    width: seleccionada ? 3 : 2,
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withValues(alpha: 0.22),
-                                                      blurRadius: 7,
-                                                      offset: const Offset(0, 2),
+                                              Stack(
+                                                clipBehavior: Clip.none,
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: esPremium
+                                                        ? (seleccionada ? 60 : 54)
+                                                        : (seleccionada ? 54 : 46),
+                                                    height: esPremium
+                                                        ? (seleccionada ? 60 : 54)
+                                                        : (seleccionada ? 54 : 46),
+                                                    padding: EdgeInsets.all(
+                                                      esPremium ? 4 : 3,
                                                     ),
-                                                  ],
-                                                ),
-                                                child: ClipOval(
-                                                  child: _construirFoto(
-                                                    publicacion,
-                                                    iconSize: 24,
+                                                    decoration: BoxDecoration(
+                                                      color: esPremium
+                                                          ? const Color(0xFFFFC857)
+                                                          : colorTipo,
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: Colors.white,
+                                                        width: esPremium ? 3 : (seleccionada ? 3 : 2),
+                                                      ),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black.withValues(
+                                                            alpha: esPremium ? 0.30 : 0.22,
+                                                          ),
+                                                          blurRadius: esPremium ? 10 : 7,
+                                                          offset: const Offset(0, 2),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Container(
+                                                      padding: EdgeInsets.all(
+                                                        esPremium ? 2 : 0,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: colorTipo,
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: ClipOval(
+                                                        child: _construirFoto(
+                                                          publicacion,
+                                                          iconSize: 24,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                                  if (esPremium)
+                                                    Positioned(
+                                                      top: -5,
+                                                      right: -5,
+                                                      child: Container(
+                                                        width: 23,
+                                                        height: 23,
+                                                        decoration: BoxDecoration(
+                                                          color: const Color(0xFFFFC857),
+                                                          shape: BoxShape.circle,
+                                                          border: Border.all(
+                                                            color: Colors.white,
+                                                            width: 2,
+                                                          ),
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors.black.withValues(alpha: 0.20),
+                                                              blurRadius: 4,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        child: const Icon(
+                                                          Icons.star_rounded,
+                                                          color: Color(0xFF704A00),
+                                                          size: 15,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
                                               ),
                                               Icon(
                                                 Icons.location_on,
-                                                color: esPerdida
-                                                    ? const Color(0xFFFF7A59)
-                                                    : const Color(0xFF20A39E),
-                                                size: 19,
+                                                color: esPremium
+                                                    ? const Color(0xFFFFC857)
+                                                    : colorTipo,
+                                                size: esPremium ? 21 : 19,
                                               ),
                                             ],
                                           ),

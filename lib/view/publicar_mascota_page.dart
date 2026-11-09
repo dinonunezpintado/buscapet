@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import '../services/imagen_service.dart';
 import '../services/publicacion_service.dart';
 import 'mapa_page.dart';
+import 'paywall_page.dart';
 
 class PublicarMascotaPage extends StatefulWidget {
   final String tipoInicial;
@@ -177,7 +178,7 @@ class _PublicarMascotaPageState
       final urlImagen = await ImagenService().subirImagen(imagen);
 
       
-await PublicacionService().guardarPublicacion(
+final idPublicacion = await PublicacionService().guardarPublicacion(
   tipo: tipo,
   nombreMascota: nombreMascota,
   especie: especie,
@@ -195,16 +196,22 @@ await PublicacionService().guardarPublicacion(
 
       if (!mounted) return;
 
-      final messenger = ScaffoldMessenger.of(context);
-
-      Navigator.of(context).pop(true);
-
-      messenger.showSnackBar(
-        const SnackBar(
-          content: Text(
-            '¡Publicación creada correctamente!',
+      if (tipo.toLowerCase().contains('perd')) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => PaywallPage(
+              idPublicacion: idPublicacion,
+              nombreMascota: nombreMascota.trim(),
+            ),
           ),
-        ),
+        );
+      }
+
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
+      Navigator.of(context).pop(true);
+      messenger.showSnackBar(
+        const SnackBar(content: Text('¡Publicación creada correctamente!')),
       );
     } catch (error) {
       debugPrint('Error al publicar mascota: $error');
